@@ -1,12 +1,13 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 const Sign_up = () => {
-  const [fromData, setFormData] = useState({});
+  const [formData, setFormData] = useState({});
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate=useNavigate()
 
   const handleChange = (e) => {
-    setFormData({ ...fromData, [e.target.id]: e.target.value })
+    setFormData({ ...formData, [e.target.id]: e.target.value })
   }
 
   const handleSubmit = async (e) => {
@@ -18,24 +19,24 @@ const Sign_up = () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(fromData)
+      body: JSON.stringify(formData)
     })
     const data = await res.json()
     setLoading(false)
-    console.log(data);
     if (!res.ok) {
       setError(true);
       return
     }
+    navigate('/Sign_in')
   }
   return (
     <div className='max-w-lg mx-auto'>
       <h1 className='text-center font-semibold py-10 text-3xl '>Sign up</h1>
       <form onSubmit={handleSubmit}>
         <div className='flex flex-col gap-3'>
-          <input type='text' placeholder='username' id="username" className=' bg-slate-200 rounded-lg p-2' onClick={handleChange} />
-          <input type='email' placeholder='email' id="email" className='bg-slate-200 rounded-lg p-2' onClick={handleChange} />
-          <input type='password' placeholder='password' id="password" className='bg-slate-200 rounded-lg p-2' onClick={handleChange} />
+          <input type='text' placeholder='username' id="username" className=' bg-slate-200 rounded-lg p-2' onChange={handleChange} />
+          <input type='email' placeholder='email' id="email" className='bg-slate-200 rounded-lg p-2' onChange={handleChange} />
+          <input type='password' placeholder='password' id="password" className='bg-slate-200 rounded-lg p-2' onChange={handleChange} />
           <button className='bg-slate-700  px-4 py-1 rounded-md text-white hover:opacity-80' >{loading ? "Loading..." : "Signup"}</button>
         </div>
       </form>
