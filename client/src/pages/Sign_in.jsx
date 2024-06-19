@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice.js'
 import { useDispatch, useSelector } from 'react-redux'
-
+import OAuth from '../components/OAuth.jsx'
 
 const Sign_in = () => {
   const [formData, setFormData] = useState({})
-  const dispatch=useDispatch()
-  const navigate = useNavigate() 
-  const {loading,error} = useSelector((state)=>state.user)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { loading, error } = useSelector((state) => state.user)
 
   const HandleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value })
@@ -44,6 +44,7 @@ const Sign_in = () => {
           <input className='bg-slate-200 p-2 rounded-lg' id='email' type='email' placeholder='email' onChange={HandleChange} required />
           <input className='bg-slate-200 p-2 rounded-lg' id='password' type='password' placeholder='password' onChange={HandleChange} required />
           <button className='bg-slate-700 p-2 rounded-md text-white' disabled={loading}>{loading ? "...Laoding" : "Sign in"}</button>
+          <OAuth />
         </div>
       </form>
       <div>

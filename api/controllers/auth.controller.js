@@ -25,8 +25,33 @@ export const signin = async (req, res, next) => {
         if (!validPassword) return next(errorHamdlerler(401, "Wrong credentials"))
         const token = jwt.sign({ id: validUser._id }, process.env.JWTToken)
         const { password: HashedPassword, ...rest } = validUser._doc
-        res.cookie('access_token', token, { httponly: true, expires: new Date(Date.now() + 3600000)}).status(200).json(rest)
+        res.cookie('access_token', token, { httponly: true, expires: new Date(Date.now() + 3600000) }).status(200).json(rest)
     } catch (error) {
         next(error)
     }
 }
+
+export const google = async (req, res, next) => {
+    console.log('hello');
+    try {
+        const validUser = await User.findOne({ email: req.body.email })
+        if (validUser) {
+            const token = jwt.sign({ id: validUser._id }, process.env.JWTToken)
+            const { password: HashedPassword, ...rest } = validUser._doc
+            res.cookie('access_token', token, { httponly: true, expires: new Date(Date.now() + 3600000) }).status(200).json(rest)
+        }
+        else {
+            const genaratedPassword = Math.random().toString(36).slice(-8);
+            const HashedPassword = bcrypt.hashSync(genaratedPassword, 10);
+            const newUser = new User({ username: req.body.name.split(" ").join("").toLowerCase() + Math.floor(Math.random * (9999 + 1) - 1).toString(), email: req.body.email, password: HashedPassword, profilePicture: req.body.photo })
+            await newUser.save();
+            const token = jwt.sign({ id: newUser._id }, process.env.JWTToken)
+            const { password: HashedPassword2, ...rest } = validUser._doc
+            res.cookie('access_token', token, { httponly: true, expires: new Date(Date.now() + 3600000) }).status(200).json(rest)
+
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
